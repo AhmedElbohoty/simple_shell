@@ -12,7 +12,7 @@
  * Return: Always 0 (Success).
  */
 int main(__attribute__((unused)) int ac, char **av,
-	 __attribute__((unused)) char **env)
+		 __attribute__((unused)) char **env)
 {
 	char *buff = NULL, *prompt_symbol = "($) ";
 	int non_term = 0;
@@ -37,10 +37,13 @@ int main(__attribute__((unused)) int ac, char **av,
 
 		if (buff[0] == '\n')
 			continue;
+
+		buff[_strlen(buff) - 1] = '\0';
 	}
 
 	free(buff);
 
+	exit(EXIT_SUCCESS);
+
 	return (0);
 }
-
