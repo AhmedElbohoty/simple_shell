@@ -11,7 +11,8 @@
  *
  * Return: Always 0 (Success).
  */
-int main(__attribute__((unused)) int ac, char **av,
+int main(__attribute__((unused)) int ac,
+		 __attribute__((unused)) char **av,
 		 __attribute__((unused)) char **env)
 {
 	char *buff = NULL, *prompt_symbol = "($) ";
@@ -29,11 +30,7 @@ int main(__attribute__((unused)) int ac, char **av,
 
 		line = getline(&buff, &buff_size, stdin);
 		if (line == -1)
-		{
-			free(buff);
-			print_error(av[0]);
-			exit(EXIT_FAILURE);
-		}
+			break;
 
 		if (buff[0] == '\n')
 			continue;
@@ -42,8 +39,6 @@ int main(__attribute__((unused)) int ac, char **av,
 	}
 
 	free(buff);
-
-	exit(EXIT_SUCCESS);
-
+	print("\n");
 	return (0);
 }
