@@ -29,4 +29,3 @@ void print_error(char *filename)
 	write(STDERR_FILENO, strerror(errno), _strlen(strerror(errno)));
 	write(STDERR_FILENO, "\n", 1);
 }
-

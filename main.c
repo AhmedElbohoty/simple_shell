@@ -1,24 +1,33 @@
-#include "shell.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <signal.h>
+#include <string.h>
+#include "shell.h"
 
 /**
- * main - prints the environment
- * @ac: The args count.
- * @av: The args vector.
- * @env: The environment vectors.
+ * main - Initialize the shell
+ * @argc: The arguments count
+ * @argv: The arguments vector
+ * @env: The environments vector
  *
- * Return: Always 0 (Success).
+ * Return: 0 (Success)
+ * Description:
+ * 1- Check if data comes from non-terminal source.
+ * 2- Print prompt symbol.
+ * 3- Get line from user.
+ * 4- Replace '\n' with '\0'.
+ * 5- If user clicks enter, repeat
+ * 6- If the command file is not exist, show error and repeat
  */
-int main(__attribute__((unused)) int ac,
-		 __attribute__((unused)) char **av,
-		 __attribute__((unused)) char **env)
+int main(__attribute__((unused)) int argc, char **argv, char **env)
 {
-	char *buff = NULL, *prompt_symbol = "($) ";
+	char *buff = NULL, **args, *prompt_symbol = "($) ";
 	int non_term = 0;
 	size_t buff_size = 0;
 	ssize_t line = 0;
+
+	signal(SIGINT, SIG_IGN);
 
 	while (1 && !non_term)
 	{
@@ -30,15 +39,23 @@ int main(__attribute__((unused)) int ac,
 
 		line = getline(&buff, &buff_size, stdin);
 		if (line == -1)
-			break;
+		{
+			free(buff);
+			print_error(argv[0]);
+			exit(EXIT_FAILURE);
+		}
 
 		if (buff[0] == '\n')
 			continue;
 
-		buff[_strlen(buff) - 1] = '\0';
+		replace_char(buff, '\n', '\0');
+
+		args = tokenizer(buff);
+
+		handle_cmds(args, argv[0], env);
 	}
 
 	free(buff);
-	print("\n");
+	free(args);
 	return (0);
 }
