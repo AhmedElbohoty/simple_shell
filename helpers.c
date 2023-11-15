@@ -46,3 +46,4 @@ int is_empty_line(char *buff)
 
 	return (1);
 }
+

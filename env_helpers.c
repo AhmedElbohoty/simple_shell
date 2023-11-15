@@ -1,7 +1,7 @@
 #include "shell.h"
 
 /**
- * _env - print all environments
+ * _env - print all environments variables
  * @env: pointer to the environments vars
  *
  * Return: Nothing
@@ -18,11 +18,11 @@ void _env(void)
 }
 
 /**
- * _getenv - get env variables
- * @env_var: env variable
- * Return: env variable result, its content
+ * _getenv - get env variables.
+ * @env_var: pointer to the environment
+ *
+ * Return: lists of environments
  */
-
 char *_getenv(char *env_var)
 {
 	int status, i = 0, j;
@@ -43,3 +43,4 @@ char *_getenv(char *env_var)
 
 	return (&environ[i][j + 1]);
 }
+

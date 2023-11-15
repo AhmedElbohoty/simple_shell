@@ -1,9 +1,11 @@
 #include "shell.h"
 
 /**
- * get_cmd_path - search file between the path
- * @command: cmd
- * Return: cmd path
+ * get_cmd_path - Get the command path
+ * @command: The pointer to the command
+ *
+ * Return: - If success, returns the path to command.
+ *         - Else, return NULL.
  */
 char *get_cmd_path(char *command)
 {
@@ -43,3 +45,4 @@ char *get_cmd_path(char *command)
 
 	return (concat);
 }
+

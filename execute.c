@@ -1,11 +1,11 @@
 #include "shell.h"
 
 /**
- * execute - execute command path, child process
- * @args: arguments
- * Return: exit status
+ * execute - execute command.
+ * @args: Double pointer to arguments.
+ *
+ * Return: exit status.
  */
-
 int execute(char **args)
 {
 	int id = fork();
@@ -25,3 +25,4 @@ int execute(char **args)
 
 	return (status);
 }
+
