@@ -1,61 +1,51 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <signal.h>
-#include <string.h>
 #include "shell.h"
 
 /**
- * main - Initialize the shell
- * @argc: The arguments count
- * @argv: The arguments vector
- * @env: The environments vector
+ * main -  Initialize the shell.
  *
- * Return: 0 (Success)
- * Description:
- * 1- Check if data comes from non-terminal source.
- * 2- Print prompt symbol.
- * 3- Get line from user.
- * 4- Replace '\n' with '\0'.
- * 5- If user clicks enter, repeat
- * 6- If the command file is not exist, show error and repeat
+ * Return: - If success, return (0).
  */
-int main(__attribute__((unused)) int argc, char **argv, char **env)
+
+int main(void)
 {
-	char *buff = NULL, **args, *prompt_symbol = "($) ";
-	int non_term = 0;
-	size_t buff_size = 0;
-	ssize_t line = 0;
+	char *buff = NULL, **args;
+	size_t read_size = 0;
+	ssize_t buff_size = 0;
+	int exit_status = 0;
 
-	signal(SIGINT, SIG_IGN);
-
-	while (1 && !non_term)
+	while (1)
 	{
-		if (isatty(STDIN_FILENO) == 0)
-			non_term = 1;
+		if (isatty(0))
+			printf("($) ");
 
-		if (!non_term)
-			print(prompt_symbol);
-
-		line = getline(&buff, &buff_size, stdin);
-		if (line == -1)
+		buff_size = getline(&buff, &read_size, stdin);
+		if (buff_size == -1 || _strcmp("exit\n", buff) == 0)
 		{
 			free(buff);
-			print_error(argv[0]);
-			exit(EXIT_FAILURE);
+			break;
+		}
+		buff[buff_size - 1] = '\0';
+
+		if (_strcmp("env", buff) == 0)
+		{
+			_env();
+			continue;
 		}
 
-		if (buff[0] == '\n')
+		if (is_empty_line(buff) == 1)
+		{
+			exit_status = 0;
 			continue;
+		}
 
-		replace_char(buff, '\n', '\0');
+		args = _split(buff, " ");
+		args[0] = search_path(args[0]);
 
-		args = tokenizer(buff);
-
-		handle_cmds(args, argv[0], env);
+		if (args[0] != NULL)
+			exit_status = execute(args);
+		else
+			perror("Error");
+		free(args);
 	}
-
-	free(buff);
-	free(args);
-	return (0);
+	return (exit_status);
 }
