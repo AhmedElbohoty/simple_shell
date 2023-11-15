@@ -24,7 +24,7 @@ char **_split(char *str, char *sep);
 char *_getenv(char *env_var);
 void _env(void);
 
-char *search_path(char *command);
+char *get_cmd_path(char *command);
 int execute(char **args);
 
 extern char **environ;
