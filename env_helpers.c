@@ -2,7 +2,6 @@
 
 /**
  * _env - print all environments variables
- * @env: pointer to the environments vars
  *
  * Return: Nothing
  */
