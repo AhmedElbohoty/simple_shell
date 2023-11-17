@@ -1,48 +1,51 @@
 #include "shell.h"
 
 /**
- * get_cmd_path - Get the command path
- * @command: The pointer to the command
+ * get_cmd_path - Get the command path from env
+ * @command: the command
  *
- * Return: - If success, returns the path to command.
- *         - Else, return NULL.
+ * Return: path to the command
  */
 char *get_cmd_path(char *command)
 {
-	struct stat info;
-	int i = 0, len = 0;
-	char *path = _getenv("PATH"), *cpy, **split, *concat = NULL;
+	char *path, *path_copy, *file_path;
+	char *token;
+	int command_len;
+	int dir_len;
+	struct stat fileState;
 
-	if (stat(command, &info) == 0)
-		return (command);
-
-	cpy = malloc(_strlen(path) + 1);
-	cpy = _strcpy(cpy, path);
-	split = _split(cpy, ":");
-
-	while (split[i])
-	{
-		len = _strlen(split[i]);
-		if (split[i][len - 1] != '/')
-			concat = str_concat(split[i], "/");
-
-		concat = str_concat(split[i], command);
-		if (stat(concat, &info) == 0)
-			break;
-
-		i++;
-	}
-
-	free(cpy);
-
-	if (!split[i])
-	{
-		free(split);
+	path = getenv("PATH");
+	if (!path)
 		return (NULL);
+
+	path_copy = strdup(path);
+	command_len = _strlen(command);
+	token = strtok(path_copy, ":");
+
+	while (token != NULL)
+	{
+		dir_len = _strlen(token);
+		file_path = malloc(command_len + dir_len + 2);
+		strcpy(file_path, token);
+		strcat(file_path, "/");
+		strcat(file_path, command);
+		strcat(file_path, "\0");
+
+		if (stat(file_path, &fileState) == 0)
+		{
+			free(path_copy);
+			return (file_path);
+		}
+		else
+		{
+			free(file_path);
+			token = strtok(NULL, ":");
+		}
 	}
 
-	free(split);
+	free(path_copy);
+	if (stat(command, &fileState) != 0)
+		return (NULL);
 
-	return (concat);
+	return (command);
 }
-
